@@ -17,3 +17,5 @@ int main(int argc, char *argv[]){
     apagar(raiz);
     return 0;
 }
+
+// Teste de commit

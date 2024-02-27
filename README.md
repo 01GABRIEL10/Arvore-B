@@ -1,11 +1,9 @@
 # Árvore B
-
-## Universidade Federal de Sergipe
-
 <div>
+    <h3>Universidade Federal de Sergipe</h3>
+    </br>
     <h3>Alunos:</h3>
     <h4>Gabriel Carvalho, Marcos Antônio, Phelipe Matos, Rafael Silva e Victor Reikdal</h4>
-    </br>
     <h3>Professor:</h3>
     <h4>Alberto Costa Neto</h4>
     </br>

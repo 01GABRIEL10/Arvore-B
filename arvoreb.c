@@ -2,82 +2,81 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdlib.h>
+
 #include "arvoreb.h"
 
 #define METADE ORDEM/2
 
-#pragma region criacao e informacao
-Arvb *criarArv(){//inicia a arvore
+#pragma region Inicialização e Informações
+
+Arvb *criarArv(){ // Inicializa a Árvore e retorna ela
     Arvb *aux;
     aux=(Arvb*)malloc(sizeof(Arvb));
     aux->tamanho=0;
     return aux;
 }
 
-int vaziaOrdem(Arvb *arv){//informa se a arvore foi iniciada
+int vaziaOrdem(Arvb *arv){ // Retorna se a Árvore(Página) existe (true || false)
     return arv==NULL;
 }
 
-int vazia(Arvb *arv){//informa nao possui elementos
+int vazia(Arvb *arv){ // Retorna se a Árvore(Página) está vazia (true || false)
     return arv->tamanho==0;
 }
 
-int tamanho(Arvb *arv){
-    return arv->tamanho;
+int cheia(Arvb *arv){ // // Retorna se a Árvore(Página) está cheia (true || false)
+    return arv->tamanho>=ORDEM-1;
 }
 
-int cheia(Arvb *arv){
-    return arv->tamanho>=ORDEM-1;
+int tamanho(Arvb *arv){ // Retorna o tamanho da Árvore
+    return arv->tamanho;
 }
 
 #pragma endregion
 
-#pragma region funcoes de insercao
+#pragma region Funções de Inserção
 
-void dividir(Arvb *origem,Arvb *destino){
-    /*
-    pega a pagina e divide os elementos na metade com outra pagina
-    */
-    int i=METADE+1;
-    for(;i<ORDEM-1;i++){
-        destino->filhos[(destino->tamanho)]=origem->filhos[i];
-        origem->filhos[i]=NULL;
-        destino->itens[(destino->tamanho)++]=origem->itens[i];
+void dividir(Arvb *origem, Arvb *destino){ // Recebe a página e divide os elementos na metade com outra página
+    int i = METADE+1;
+    for(; i<ORDEM-1; i++){
+        destino->filhos[(destino->tamanho)] = origem->filhos[i];
+        origem->filhos[i] = NULL;
+        destino->itens[(destino->tamanho)++] = origem->itens[i];
     }
-    destino->filhos[(destino->tamanho)]=origem->filhos[i];
-    origem->tamanho=ORDEM-METADE-1;
+    destino->filhos[(destino->tamanho)] = origem->filhos[i];
+    origem->tamanho = ORDEM-METADE-1;
 }
 
 void swap(int *a,int *b){
-    int c=*a;
-    *a=*b;
-    *b=c;
+    int c = *a;
+    *a = *b;
+    *b = c;
 }
  
-void inserirOrd(Arvb *arv,int valor){//insere no vetor de forma ordenada
-    int status=0;//informa se ja foi feita a troca 
-    int guardado=0;//guarda o numero
-    if(vazia(arv)){
-        arv->itens[arv->tamanho]=valor;
-    }else{
-    for(int i=0;i<=arv->tamanho;i++){
-      if(status==0){
-          if(valor==arv->itens[i]){
-            printf("itens iguais:%d\n",valor);
-            arv->tamanho--;
-            break;
-          }
-          if(valor<arv->itens[i]){
-              guardado=arv->itens[i];
-              arv->itens[i]=valor;
-              status=1;
-          }else if(i==arv->tamanho){
-              arv->itens[i]=valor;
-          }
-      }else{
-          swap(&guardado,&(arv->itens[i]));
-      }
-    }
+void inserirOrd(Arvb *arv,int valor){ // Insere os itens de forma ordenada
+    int status = 0; // Informa se ja foi feita a troca 
+    int guardado = 0; // Guarda o número
+    if (vazia(arv)){
+        arv->itens[arv->tamanho] = valor;
+    } else {
+        for (int i=0;i<=arv->tamanho;i++) {
+            if (status==0) {
+                if (valor==arv->itens[i]) {
+                    printf("itens iguais:%d\n",valor);
+                    arv->tamanho--;
+                    break;
+                }
+                if (valor<arv->itens[i]) {
+                    guardado = arv->itens[i];
+                    arv->itens[i] = valor;
+                    status = 1;
+                } else if (i==arv->tamanho) {
+                    arv->itens[i] = valor;
+                }
+            }else{
+                swap(&guardado,&(arv->itens[i]));
+            }
+        }
     }
     arv->tamanho++;
 }
@@ -398,7 +397,7 @@ void apagar(Arvb *arv){
 
 #pragma endregion
 
-#pragma region  funcoes de printar a arvore
+#pragma region Funções de Imprimir
 
 void printLista(int *list,int tamanho){
     for(int i=0;i<tamanho;i++){

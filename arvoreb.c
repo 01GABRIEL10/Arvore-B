@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "arvoreb.h"
 
-#define METADE MAX/2
+#define METADE ORDEM/2
 
 #pragma region criacao e informacao
 Arvb *criarArv(){//inicia a arvore
@@ -27,7 +27,7 @@ int tamanho(Arvb *arv){
 }
 
 int cheia(Arvb *arv){
-    return arv->tamanho>=MAX-1;
+    return arv->tamanho>=ORDEM-1;
 }
 
 #pragma endregion
@@ -39,13 +39,13 @@ void dividir(Arvb *origem,Arvb *destino){
     pega a pagina e divide os elementos na metade com outra pagina
     */
     int i=METADE+1;
-    for(;i<MAX-1;i++){
+    for(;i<ORDEM-1;i++){
         destino->filhos[(destino->tamanho)]=origem->filhos[i];
         origem->filhos[i]=NULL;
-        destino->valores[(destino->tamanho)++]=origem->valores[i];
+        destino->itens[(destino->tamanho)++]=origem->itens[i];
     }
     destino->filhos[(destino->tamanho)]=origem->filhos[i];
-    origem->tamanho=MAX-METADE-1;
+    origem->tamanho=ORDEM-METADE-1;
 }
 
 void swap(int *a,int *b){
@@ -58,24 +58,24 @@ void inserirOrd(Arvb *arv,int valor){//insere no vetor de forma ordenada
     int status=0;//informa se ja foi feita a troca 
     int guardado=0;//guarda o numero
     if(vazia(arv)){
-        arv->valores[arv->tamanho]=valor;
+        arv->itens[arv->tamanho]=valor;
     }else{
     for(int i=0;i<=arv->tamanho;i++){
       if(status==0){
-          if(valor==arv->valores[i]){
+          if(valor==arv->itens[i]){
             printf("itens iguais:%d\n",valor);
             arv->tamanho--;
             break;
           }
-          if(valor<arv->valores[i]){
-              guardado=arv->valores[i];
-              arv->valores[i]=valor;
+          if(valor<arv->itens[i]){
+              guardado=arv->itens[i];
+              arv->itens[i]=valor;
               status=1;
           }else if(i==arv->tamanho){
-              arv->valores[i]=valor;
+              arv->itens[i]=valor;
           }
       }else{
-          swap(&guardado,&(arv->valores[i]));
+          swap(&guardado,&(arv->itens[i]));
       }
     }
     }
@@ -84,14 +84,14 @@ void inserirOrd(Arvb *arv,int valor){//insere no vetor de forma ordenada
 
 int buscabinariaFilho(Arvb *arv,Arvb *filho,int esq,int dir){
     if(esq==dir){
-        if(arv->filhos[esq]->valores[0]==filho->valores[0])
+        if(arv->filhos[esq]->itens[0]==filho->itens[0])
             return esq;
         else
             return -1;
     }else{
         int meio=(esq+dir)/2;
 
-        if(arv->filhos[meio]->valores[0]<filho->valores[0]){
+        if(arv->filhos[meio]->itens[0]<filho->itens[0]){
             return buscabinariaFilho(arv,filho,meio+1,dir);
         }else{
             return buscabinariaFilho(arv,filho,esq,meio);
@@ -101,14 +101,14 @@ int buscabinariaFilho(Arvb *arv,Arvb *filho,int esq,int dir){
 
 int buscaProximo(Arvb *arv,int item ,int esq,int dir){
     if(esq==dir){
-        if(arv->valores[esq]>item)
+        if(arv->itens[esq]>item)
             return esq;
         else
             return esq+1;
     }else{
         int meio=(esq+dir)/2;
 
-        if(arv->valores[meio]>item)
+        if(arv->itens[meio]>item)
             return buscaProximo(arv,item,esq,meio);
         else
             return buscaProximo(arv,item,meio+1,dir);
@@ -131,7 +131,7 @@ void inserirFilho(Arvb *pai,Arvb *filho,int lugar){//insere um novo filho
 void split(Arvb *arv,Arvb *pai){//efetua o split
     if(arv==raiz){
         Arvb *encima=criarArv(),*lado=criarArv();
-        inserirOrd(encima,arv->valores[(METADE)]);
+        inserirOrd(encima,arv->itens[(METADE)]);
         dividir(arv,lado);
 
         raiz=encima;
@@ -139,7 +139,7 @@ void split(Arvb *arv,Arvb *pai){//efetua o split
         raiz->filhos[1]=lado;
     }else{
         Arvb *lado=criarArv();
-        inserirOrd(pai,arv->valores[(METADE)]);
+        inserirOrd(pai,arv->itens[(METADE)]);
         dividir(arv,lado);
         inserirFilho(pai,lado,numeroFilho(pai,arv));
     }
@@ -188,7 +188,7 @@ int buscabinaria(int *arv,int valor,int esq,int dir){
 }
 
 int possui(Arvb *arv,int valor){
-    return buscabinaria(arv->valores,valor,0,arv->tamanho-1)!=-1?1:0;
+    return buscabinaria(arv->itens,valor,0,arv->tamanho-1)!=-1?1:0;
 }
 
 Arvb *pesquisa(Arvb *arv,int valor){
@@ -220,17 +220,17 @@ void adicionarPai(Arvb *pai,Arvb *filho,int local){
     /*
     essa funcao remove da pagina pai e adiciona na pagina filha 
     */
-    filho->valores[filho->tamanho++]=pai->valores[local];
+    filho->itens[filho->tamanho++]=pai->itens[local];
 
     for(int i=local;i<pai->tamanho-1;i++){//
-        pai->valores[i]=pai->valores[i+1];
+        pai->itens[i]=pai->itens[i+1];
         pai->filhos[i+1]=pai->filhos[i+2];
     }
     pai->tamanho--;
 }
 
 int suporta(Arvb *a,Arvb *b){//testa se suporta adicionar uma pagina b na pagina a e um item da pagina pai
-    return tamanho(a)+tamanho(b)<MAX-2;
+    return tamanho(a)+tamanho(b)<ORDEM-2;
 }
 
 int metade(Arvb *arv){//testa se está abaixo da capacidade minima
@@ -248,7 +248,7 @@ void unir(Arvb *a,Arvb *b){
     }
     int i=a->tamanho,j=0;
     for(;i<(a->tamanho+b->tamanho+1);i++){
-        a->valores[i]=b->valores[j];
+        a->itens[i]=b->itens[j];
         a->filhos[i]=b->filhos[j++];
     }
     a->tamanho+=b->tamanho;
@@ -316,7 +316,7 @@ void substituir(Arvb *arv,int *valor,Arvb *pai){
     substituir o item com o numero mais proximo*/
 
     if(vaziaOrdem(arv->filhos[0])){
-        swap(&(arv->valores[arv->tamanho-1]),valor);
+        swap(&(arv->itens[arv->tamanho-1]),valor);
         arv->tamanho--;
     }else{
         substituir(arv->filhos[arv->tamanho],valor,arv);
@@ -331,8 +331,8 @@ int removerPagina(Arvb *arv,int valor){//remove o item da pagina
     int status=0;
     if(vaziaOrdem(arv->filhos[0])){
         for(int i=0;i<arv->tamanho;i++){
-            if(arv->valores[i]==valor){//faz o item ir para o final da pagina e diminui o tamanho dela
-                swap(&(arv->valores[i]),&(arv->valores[i+1]));
+            if(arv->itens[i]==valor){//faz o item ir para o final da pagina e diminui o tamanho dela
+                swap(&(arv->itens[i]),&(arv->itens[i+1]));
                 status=1;
             }
         }
@@ -353,10 +353,10 @@ void removerArv(Arvb *arv,Arvb *pai,int valor){//remocão geral
                removerPagina(arv,valor)? printf("removeu\n"):printf("nao existe\n");
            }else{
                for(int i=0;i<arv->tamanho;i++){
-                   if(valor==arv->valores[i]){//executa a funcao de troca
-                        substituir(arv->filhos[i],&(arv->valores[i]),arv);
+                   if(valor==arv->itens[i]){//executa a funcao de troca
+                        substituir(arv->filhos[i],&(arv->itens[i]),arv);
                         break;
-                   }else if(valor<arv->valores[i]){
+                   }else if(valor<arv->itens[i]){
                         removerArv(arv->filhos[i],arv,valor);
                         break;
                    }else if(i==arv->tamanho-1){
@@ -418,7 +418,7 @@ void printArv(Arvb *arv,int altura){
             else
                 printf("filho[%d]%*s",altura,altura*3 +10,"|");
             
-            printLista(arv->valores,arv->tamanho);
+            printLista(arv->itens,arv->tamanho);
             printf("\n");
 
             if(vaziaOrdem(arv->filhos[0])==0)
@@ -437,7 +437,7 @@ void printVetor(Arvb *arv){//printa e forma de vetor
         if(vazia(arv)){
             printf("sem elementos\n");
         }else{
-            printLista(arv->valores,arv->tamanho);
+            printLista(arv->itens,arv->tamanho);
             // if(arv==raiz)
             //     printf("\n");
             if(vaziaOrdem(arv->filhos[0])==0){

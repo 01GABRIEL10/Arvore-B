@@ -1,31 +1,44 @@
-#ifndef ARVOREB_H_INCLUDED
-#define ARVOREB_H_INCLUDED
+#ifndef ARVORE_B
+#define ARVORE_B
 
-#define MAX 9//quantidade maxima de ponteiros por paginas
+#define ORDEM 9 // Ordem da Árvore
 
-////////////////////////////////////////////
-//////defincao da arvore b//////////////////
-///////////////////////////////////////////
+/*
+    Estrutura da Árvore
+*/
 
-typedef struct pagina{
+typedef struct pagina {
     int tamanho;
-    int valores[MAX-1];
-    struct pagina *filhos[MAX];
-}Arvb;
+    int itens[ORDEM-1];
+    struct pagina *filhos[ORDEM];
+} Arvb;
 
 Arvb *raiz;
 
-////////////////////////////////////////////////
-///////funcoes///////////////
-///////////////////////////////////////////////
+/*
+    Funções
+*/
 
+// Funções Iniciais
 Arvb *criarArv();
-void inserir(Arvb *arv,Arvb *pai,int valor);//inserção geral
-void printArv(Arvb *arv,int altura);//mostra em formato de arvore
-void printVetor(Arvb *arv);//mostra em formato de vetor
-void remover(Arvb *arv,Arvb *pai,int valor);
-void printFormat(Arvb *arv,int altura);
-Arvb* pesquisa(Arvb *arv,int valor);
 void menu(int *b);
+
+// Funções de Imprimir
+void printArv(Arvb *arv,int altura); // Imprime a Árvore
+void printVetor(Arvb *arv); // Não está sendo utilizado no código ...
+void printFormat(Arvb *arv,int altura); // Função não existe
+
+// Funções de Inserção
+void inserir(Arvb *arv,Arvb *pai,int valor);
+
+// Funções de Remoção
+void remover(Arvb *arv,Arvb *pai,int valor);
+
+// Funções de Pesquisa
+Arvb* pesquisa(Arvb *arv,int valor);
+
+// Funções de Limpar
 void apagar(Arvb *);
+
+
 #endif

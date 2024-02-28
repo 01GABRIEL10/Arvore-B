@@ -141,76 +141,69 @@ void split(Arvb *arv, Arvb *pai){ // Separa os itens da Árvore(Página) e reoga
     }
 }
 
-void inserir(Arvb *arv,Arvb *pai,int valor){//insercao geral
-
-   if(vaziaOrdem(arv)){
-       printf("nao inicializada\n");
-   }else{
-        if(vaziaOrdem(arv->filhos[0])){
-            /*caso não possua filhos é sinal de q se trata da pagina mais baixa da arvore 
-            onde de se efetuar a remoção
-            */
-            inserirOrd(arv,valor);
-        }else{
-            int i=buscaProximo(arv,valor,0,arv->tamanho-1);
-            inserir(arv->filhos[i],arv,valor);
+void inserir(Arvb *arv, Arvb *pai, int valor){ // Inserir um item na Árvore(Página)
+   if (vaziaOrdem(arv)) {
+        printf("nao inicializada\n");
+   } else {
+        if (vaziaOrdem(arv->filhos[0])) { // Caso não possui filhos, indica que a Árvore(Página) é uma folha, então inserimos
+            inserirOrd(arv, valor);
+        } else { // Caso possua, procuramos aonde inserir
+            int i = buscaProximo(arv, valor, 0, arv->tamanho-1);
+            inserir(arv->filhos[i], arv, valor);
         }
-
-        if(cheia(arv)){
-            split(arv,pai);
+        if (cheia(arv)) { // Se a Árvore(Página) está cheia, efetuamos o split
+            split(arv, pai);
         }
    }
 }
 
 #pragma endregion
 
-#pragma region funcoes de pesquisa
+#pragma region Funções de Pesquisa
 
-int buscabinaria(int *arv,int valor,int esq,int dir){
-    if(esq==dir){
-        if(arv[esq]==valor){
+int buscabinaria(int *arv, int valor, int esq, int dir) {
+    if (esq == dir) {
+        if (arv[esq] == valor) {
             return esq;
-        }else{
+        } else {
             return -1;
         }
-    }else{
-        int meio=(esq+dir)/2;
-
-        if(arv[meio]>valor)
-            return buscabinaria(arv,valor,esq,meio-1);
+    } else {
+        int meio = (esq + dir)/2;
+        if(arv[meio] > valor)
+            return buscabinaria(arv, valor, esq, meio-1);
         else
-            return buscabinaria(arv,valor,meio,dir);
+            return buscabinaria(arv, valor, meio, dir);
     }
 }
 
 int possui(Arvb *arv,int valor){
-    return buscabinaria(arv->itens,valor,0,arv->tamanho-1)!=-1?1:0;
+    return buscabinaria(arv->itens, valor, 0, arv->tamanho-1)!=-1?1:0;
 }
 
-Arvb *pesquisa(Arvb *arv,int valor){
-
-    if(vaziaOrdem(arv)){
+Arvb *pesquisa(Arvb *arv, int valor){ // Retorna a Árvore(Página) onde se encontra o item
+    if (vaziaOrdem(arv)) {
         printf("nao iniciada\n");
         exit(1);
-    }else if(vazia(arv)){
+    } else if (vazia(arv)) {
         printf("sem elementos\n");
         exit(1);
-    }else if(possui(arv,valor)){
+    } else if (possui(arv, valor)) {
         printf("possui na lista\n");
         return arv;
-    }else if(vaziaOrdem(arv->filhos[0])){
+    } else if (vaziaOrdem(arv->filhos[0])) {
         printf("nao possui na lista\n");
         return NULL;
+    } else {
+        int i = buscaProximo(arv, valor, 0, arv->tamanho-1);
+        pesquisa(arv->filhos[i], valor);
     }
-    else{
-        int i=buscaProximo(arv,valor,0,arv->tamanho-1);
-        pesquisa(arv->filhos[i],valor);
-    }    
 }
 
 #pragma endregion
 
-#pragma region  funcoes de remocao
+#pragma region Funções de Remoção
+
 void adicionarPai(Arvb *pai,Arvb *filho,int local){
 
     /*

@@ -59,18 +59,18 @@ void inserirOrd(Arvb *arv,int valor){ // Insere os itens de forma ordenada
     if (vazia(arv)){
         arv->itens[arv->tamanho] = valor;
     } else {
-        for (int i=0;i<=arv->tamanho;i++) {
-            if (status==0) {
+        for (int i = 0; i<=arv->tamanho; i++) {
+            if (status == 0) {
                 if (valor==arv->itens[i]) {
                     printf("itens iguais:%d\n",valor);
                     arv->tamanho--;
                     break;
                 }
-                if (valor<arv->itens[i]) {
+                if (valor < arv->itens[i]) {
                     guardado = arv->itens[i];
                     arv->itens[i] = valor;
                     status = 1;
-                } else if (i==arv->tamanho) {
+                } else if (i == arv->tamanho) {
                     arv->itens[i] = valor;
                 }
             }else{
@@ -81,66 +81,63 @@ void inserirOrd(Arvb *arv,int valor){ // Insere os itens de forma ordenada
     arv->tamanho++;
 }
 
-int buscabinariaFilho(Arvb *arv,Arvb *filho,int esq,int dir){
-    if(esq==dir){
-        if(arv->filhos[esq]->itens[0]==filho->itens[0])
+int buscabinariaFilho(Arvb *arv, Arvb *filho, int esq, int dir){
+    if (esq == dir) {
+        if(arv->filhos[esq]->itens[0] == filho->itens[0])
             return esq;
         else
             return -1;
-    }else{
-        int meio=(esq+dir)/2;
-
-        if(arv->filhos[meio]->itens[0]<filho->itens[0]){
-            return buscabinariaFilho(arv,filho,meio+1,dir);
-        }else{
-            return buscabinariaFilho(arv,filho,esq,meio);
+    } else {
+        int meio = (esq + dir)/2;
+        if (arv->filhos[meio]->itens[0] < filho->itens[0]){
+            return buscabinariaFilho(arv, filho, meio+1, dir);
+        } else {
+            return buscabinariaFilho(arv, filho, esq, meio);
         }
     }
 }
 
-int buscaProximo(Arvb *arv,int item ,int esq,int dir){
-    if(esq==dir){
-        if(arv->itens[esq]>item)
+int buscaProximo(Arvb *arv, int item , int esq, int dir){
+    if (esq == dir) {
+        if(arv->itens[esq] > item)
             return esq;
         else
             return esq+1;
-    }else{
-        int meio=(esq+dir)/2;
-
-        if(arv->itens[meio]>item)
-            return buscaProximo(arv,item,esq,meio);
+    } else {
+        int meio = (esq + dir)/2;
+        if(arv->itens[meio] > item)
+            return buscaProximo(arv, item, esq, meio);
         else
-            return buscaProximo(arv,item,meio+1,dir);
+            return buscaProximo(arv, item, meio+1, dir);
     }
 }
 
-int numeroFilho(Arvb *pai,Arvb *filho){//informa qual é a posicão do filho na lista pai
-   return buscabinariaFilho(pai,filho,0,pai->tamanho);
+int numeroFilho(Arvb *pai, Arvb *filho){ // Retorna a posição do filho em relação ao pai
+    return buscabinariaFilho(pai, filho, 0, pai->tamanho);
 }
 
-void inserirFilho(Arvb *pai,Arvb *filho,int lugar){//insere um novo filho
-    Arvb *aux,*aux1=filho;
-    for(int i=lugar+1;i<=pai->tamanho;i++){
-        aux=pai->filhos[i];
-        pai->filhos[i]=aux1;
-        aux1=aux;
+void inserirFilho(Arvb *pai, Arvb *filho, int lugar){ // Insere um novo filho
+    Arvb *aux, *aux1 = filho;
+    for (int i = lugar+1; i <= pai->tamanho; i++){
+        aux = pai->filhos[i];
+        pai->filhos[i] = aux1;
+        aux1 = aux;
     }
 }
 
-void split(Arvb *arv,Arvb *pai){//efetua o split
-    if(arv==raiz){
-        Arvb *encima=criarArv(),*lado=criarArv();
-        inserirOrd(encima,arv->itens[(METADE)]);
-        dividir(arv,lado);
-
-        raiz=encima;
-        raiz->filhos[0]=arv;
-        raiz->filhos[1]=lado;
+void split(Arvb *arv, Arvb *pai){ // Separa os itens da Árvore(Página) e reoganiza
+    if(arv == raiz){
+        Arvb *encima = criarArv(), *lado = criarArv();
+        inserirOrd(encima, arv->itens[(METADE)]);
+        dividir(arv, lado);
+        raiz = encima;
+        raiz->filhos[0] = arv;
+        raiz->filhos[1] = lado;
     }else{
-        Arvb *lado=criarArv();
-        inserirOrd(pai,arv->itens[(METADE)]);
-        dividir(arv,lado);
-        inserirFilho(pai,lado,numeroFilho(pai,arv));
+        Arvb *lado = criarArv();
+        inserirOrd(pai, arv->itens[(METADE)]);
+        dividir(arv, lado);
+        inserirFilho(pai, lado, numeroFilho(pai, arv));
     }
 }
 
